@@ -1,0 +1,180 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Affectation;
+use App\Models\Employe;
+use App\Models\Asset;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use DataTables;
+
+
+class AffectationController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $affectations = DB::table('affectations')
+        ->join('employes', 'affectations.id_emp', '=', 'employes.id_emp')
+        ->get(); 
+
+        //$affectations = Affectation::latest()->get();
+        if ($request->ajax()) {
+            
+            return Datatables::of($affectations)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+                            $btn = '<button type="button" data-toggle="modal"  class="btn editbtn btn-primary btn-sm fa fa-edit editAsset" 
+                            data-id="'.$row->id_affect.'"></button>';
+                            $btn = $btn.'<button type="button" data-toggle="modal" data-target="#delete_asset" class="btn btn-danger btn-sm fa fa-trash-alt delAsset" 
+                            data-id="'.$row->id_affect.'"></button>';
+                            return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+        //return $affectations;
+        return view('affectations/affectation');
+    }
+
+    public function autocompleteEmployes(Request $request)
+    {
+        $nom = $request->input('query');
+        $employe = Employe::select("nom_emp",)
+            ->where("nom_emp","LIKE","%{$nom}%")
+            ->get();
+
+            $employes = array();
+            foreach ($employe as $item)
+                {
+                    $employes[] = $item->nom_emp;
+                }
+        return response()->json($employes);
+    }
+
+    public function autocompleteLaptops(Request $request)
+    {
+        $code = $request->input('query');
+        $laptop = Asset::select("inventory_code")
+            ->where("asset_type",1)
+            ->where("inventory_code","LIKE","%{$code}%")
+            ->get();
+
+            $laptops = array();
+            foreach ($laptop as $item)
+                {
+                    $laptops[] = $item->inventory_code;
+                }
+        return response()->json($laptops);
+    }
+
+    public function autocompleteVHF(Request $request)
+    {
+        $code = $request->input('query');
+        $vhf = Asset::select("inventory_num")
+            ->where("asset_type",2)
+            ->where("inventory_code","LIKE","%{$code}%")
+            ->get();
+
+            $radios = array();
+            foreach ($vhf as $item)
+                {
+                    $radios[] = $item->inventory_num;
+                }
+        return response()->json($vhf);
+    }
+
+    public function autocompleteThuraya(Request $request)
+    {
+        //$code = $request->input('query');
+        $thuraya = Asset::select("inventory_num")
+            ->where("asset_type",3)
+            //->where("inventory_code","LIKE","%{$code}%")
+            ->get();
+
+            $thurayas = array();
+            foreach ($thuraya as $item)
+                {
+                    $thurayas[] = $item->inventory_num;
+                }
+        return response()->json($thurayas);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($name)
+    {
+        //$product = Product::find($id);
+        $infos = DB::table('employes')
+            ->join('unite', 'unite.id', '=', 'employes.unite_emp')
+            ->where('employes.nom_emp',$name) 
+            ->get();
+
+        // return response()->json($product);
+        return $infos;
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}

@@ -1,0 +1,70 @@
+@extends('layouts.admin')
+
+@section('contenu')
+    <form action="" method="POST">
+        @csrf
+        <fieldset class="form-group border border-primary rounded p-2">
+            <legend  class="w-auto col-form-label"> Type </legend>
+                <div class="row">
+                <label for="asset_type" class="form-group col-sm-2 col-form-label">Type de Materiel : </label>
+                <div class="col-sm-2">
+                        <select class="form-control form-control-user" id="asset_type" name="asset_type">
+                            <option>Selectionner</option>
+                            <option>Laptop</option>
+                            <option>Radio VHF</option>
+                            <option>Switch</option>
+                            <option>Printer</option>
+                            <option>Acces Point</option>
+                        </select>
+                </div>
+                </div>
+        </fieldset>
+        
+        <fieldset class="form-group border border-primary rounded p-2">
+            <legend  class="w-auto col-form-label"> Materiel </legend>
+                <div class="row">
+                    <div class="col-sm-6"> 
+                        <input type="text" class="form-group form-control form-control-user" id="asset_code" name="asset_code"  placeholder="Code d'inventaire...">   
+                        <input type="text" class="form-group form-control form-control-user" id="asset_invent" name="asset_invent"  placeholder="Numéro d'inventaire..."> 
+                    </div>
+        
+                    <div class="col-sm-6"> 
+                        <input type="text" class="form-group form-control form-control-user" id="asset_desc" name="asset_desc" placeholder="Description de l'article...">
+                        <input type="text" class="form-control form-control-user" id="asset_serial" name="asset_serial" placeholder="Numéro de série...">
+                    </div>
+                </div>
+        </fieldset>
+        
+        <fieldset class="form-group border border-primary rounded p-2">
+            <legend class="w-auto col-form-label"> Purchasing </legend>
+                <div class="row">
+                    <div class="col-sm-4 form-group">
+                        <input type="text" class="form-control form-control-user" id="purch_order" name="purch_order" placeholder="Purchase Order...">
+                    </div>
+                    <div class="col-sm-3 form-group">
+                        <label for="purch_order_date" class="col-form-label">Purchase Order Date : </label>
+                    </div>
+                    <div class="col-sm-3 form-group">
+                        <input type="date" class="form-control form-control-user" id="purch_order_date" name="purch_order_date">
+                    </div>
+                </div>
+        </fieldset>
+
+        <fieldset class="form-group border border-primary rounded p-2">
+            <legend class="w-auto col-form-label"> Commentaires </legend>
+            <textarea class="form-control" id="asset_comment" name="asset_comment" placeholder="Commentaires..." rows="3"></textarea>
+        </fieldset>
+        <br>
+        <div class="form-group row">
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4">
+                <button type="submit" class="btn btn-primary btn-succes">Enregistrer</button>
+                <button type="reset" class="btn btn-primary btn-danger">Annuler</button>
+            </div>
+            <div class="col-sm-4">
+            </div>
+        </div>
+</form>
+
+@endsection

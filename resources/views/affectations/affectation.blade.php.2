@@ -1,0 +1,382 @@
+@extends('layouts.admin')
+
+
+@section('contenu')
+<div class="container table-responsive">
+    <button data-toggle="modal" class="btn btn-primary" id="createAffect">Nouveau</button>
+        <br><br>
+        <table class="table table-bordered data-table">
+
+            <thead>
+                <tr>
+                    <th>Nom et Prénom(s)</th>
+                    <th>Inventaire Laptop</th>
+                    <th>Description Laptop</th>
+                    <th>Serial Laptop</th>
+                    <th>Nom Laptop</th>
+                 
+                    <th>Inventaire Radio</th>
+                    <th>Description Radio </th>
+                    <th>Serial Radio</th>
+                    <th>Callsign</th>
+                 
+                    <th>Inventaire Thuraya</th>
+                    <th>Description Thuraya</th>
+                    <th>Serial Thuraya</th>
+                    <th>Sim Thuraya</th>
+                    <th>Numéro Thuraya</th>
+                 
+                    <th>Commentaires</th>
+                    <th width="100px">Actions</th>
+                </tr>
+
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    {{-- Modal Nouveau Laptop --}}
+    <div class="modal fade " data-backdrop="static" data-keyboard="false" id="add_affect">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content container">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modelHeading"></h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <form  method="POST">
+                    @csrf
+                    <div class="modal-body row">
+                        <fieldset class="form-group border border-primary rounded p-2 col-md-12">
+                            <legend  class="w-auto col-form-label"> Utilisateur </legend>
+                                <div class="row">
+                                    <div class="col"> 
+                                        <input type="text" class="typeahead form-group form-control form-control-user" id="nom" name="nom"  placeholder="Nom et Prénom(s)...">   
+                                        <input type="text" class="form-group form-control form-control-user" id='fonction' name="fonction"  placeholder="Fonction..." disabled> 
+                                    </div>
+
+                                </div>
+                        </fieldset>
+                        <fieldset class="form-group border border-primary rounded p-2 col-md-12">
+                            <legend  class="w-auto col-form-label"> Laptop </legend>
+                                <div class="row">
+                                    <div class="col"> 
+                                        <input type="text" class="typeahead form-group form-control form-control-user" id="invent_lap" name="invent_lap"  placeholder="Numéro d'inventaire...">   
+                                        <input type="text" class="form-group form-control form-control-user" id="desc_lap" name="desc_lap"  placeholder="Description..." disabled> 
+                                    </div>
+
+                                </div>
+                        </fieldset>
+                        <fieldset class="form-group border border-primary rounded p-2 col-md-12">
+                            <legend  class="w-auto col-form-label"> Radio </legend>
+                                <div class="row">
+                                    <div class="col"> 
+                                        <input type="text" class="typeahead form-group form-control form-control-user" id="invent_vhf" name="invent_vhf"  placeholder="Numéro d'inventaire...">   
+                                        <input type="text" class="form-group form-control form-control-user" id="desc_vhf" name="desc_vhf"  placeholder="Description..." disabled> 
+                                    </div>
+
+                                </div>
+                        </fieldset>
+                        <fieldset class="form-group border border-primary rounded p-2 col-md-12">
+                            <legend  class="w-auto col-form-label"> Thuraya </legend>
+                                <div class="row">
+                                    <div class="col"> 
+                                        <input type="text" class="typeahead form-group form-control form-control-user" id="invent_thuraya" name="invent_thuraya"  placeholder="Numéro d'inventaire...">   
+                                        <input type="text" class="form-group form-control form-control-user" id="desc_thur" name="desc_thur"  placeholder="Description..." disabled> 
+                                    </div>
+
+                                </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    
+
+
+    {{-- Modal Modifier Laptop --}}
+    <div class="modal fade " data-backdrop="static" data-keyboard="false" id="edit_asset">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content container">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="e_modelHeading"></h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <form method="POST">
+                    @csrf
+                    @method('PUT') 
+                    <div class="modal-body row">
+                        <input type="hidden" class="form-group form-control form-control-user" name="m_asset_id" id="m_asset_id"> 
+                        <input type="hidden" class="form-group form-control form-control-user" name="type_id" id="type_id"> 
+                        <div class="form-group row">
+                            <label for="asset_type" class="form-group col-md-4 col-form-label">Type: </label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-group form-control form-control-user" id="type_description" name="type_description" disabled> 
+                            </div>
+                        </div> 
+                        <input type="text" class="form-group form-control form-control-user" id="asset_code" name="asset_code" > 
+                        <input type="text" class="form-group form-control form-control-user" id="asset_invent" name="asset_invent" > 
+                        <input type="text" class="form-group form-control form-control-user" id="asset_desc" name="asset_desc" > 
+                        <input type="text" class="form-group form-control form-control-user" id="asset_serial" name="asset_serial" > 
+                        <input type="text" class="form-group form-control form-control-user" id="purch_order" name="purch_order" > 
+                        <div class="form-group row">
+                            <label for="asset_date" class="col-form-label col-md-5">Date d'achat:</label>
+                            <div class="col-md-7">
+                                <input type="date" class="form-group form-control form-control-user" id="purch_order_date" name="purch_order_date"> 
+                            </div>
+                        </div>
+                        <textarea class="form-control" id="asset_comment" name="asset_comment" rows="3"></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" name="savebtn">Enregistrer</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Modal Supprimer Laptop --}}
+<div class="modal fade " data-backdrop="static" data-keyboard="false" id='delete_asset'>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content container">
+            <div class="modal-header">
+                <h5 class="modal-title" id="d_modelHeading"></h5>              
+                <button type="button" class="close" data-dismiss="modal">
+                <span>&times;</span>
+                </button>
+            </div>
+            <form   method="POST">
+                @csrf
+                @method('DELETE') 
+                <div class="modal-body row">
+                    <input type="hidden" class="form-group form-control form-control-user" id="d_asset_id" name="d_asset_id" > 
+                    <p class="text-center" width="50px">Voulez vous vraiment supprimer?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning">oui</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Non</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{{-- Fin Modal Supprimer Laptop --}}
+<script>
+    var listeEmp = "{{ route('completeemp') }}";
+$('input.typeahead#nom').typeahead({
+    source:  function (query, process) {
+    return $.get(listeEmp, { query: query }, function (data) {
+            return process(data);
+        });
+    }
+});
+
+$('#nom').focusout(function(e){
+    var name = e.target.value;
+    $.get("{{ route('affectation.index') }}" +'/' + name +'/edit', function (data) {
+        $('#fonction').val(data[0].fonction_emp);
+        console.log(data[0]);
+    })
+});
+
+
+
+    var listeLap = "{{ route('completelaptop') }}";
+    $('input.typeahead#invent_lap').typeahead({
+        source:  function (query, process) {
+        return $.get(listeLap, { query: query }, function (data) {
+            console.log(data);
+                return process(data);
+            });
+        }
+    });
+
+    $('#invent_lap').focusout(function(d){
+    var name = d.target.value;
+    $.get("{{ route('asset.index') }}" +'/' + name +'/edit', function (data) {
+        $('#desc_lap').val(data[0].asset_description);
+        console.log(data[0]);
+    })
+});
+
+
+    var listeVhf = "{{ route('completevhf') }}";
+    $('input.typeahead#invent_vhf').typeahead({
+        source:  function (query, process) {
+        return $.get(listeVhf, { query: query }, function (data) {
+                return process(data);
+            });
+        }
+    });
+
+    $('#invent_vhf').focusout(function(d){
+    var name = d.target.value;
+    $.get("{{ route('asset.index') }}" +'/' + name +'/edit', function (data) {
+        $('#desc_vhf').val(data[0].asset_description);
+        console.log(data[0]);
+    })
+});
+
+
+    var listeThur = "{{ route('completethuraya') }}";
+    $('input.typeahead#invent_thuraya').typeahead({
+        source:  function (query, process) {
+        return $.get(listeThur, { query: query }, function (data) {
+                return process(data);
+            });
+        }
+    });
+
+    $('#invent_lap').focusout(function(d){
+    var name = d.target.value;
+    $.get("{{ route('asset.index') }}" +'/' + name +'/edit', function (data) {
+        $('#desc_thur').val(data[0].asset_description);
+        console.log(data[0]);
+    })
+});
+
+
+</script>
+<script type="text/javascript">
+/* var listeEmp = "{{ route('completeemp') }}";
+    $('input.typeahead#nom').typeahead({
+        source:  function (query, process) {
+        $.get(listeEmp, { query: query }, function (data) {
+            return process(data);
+            console.log(data);
+            });
+    }
+});
+
+$('#nom').focusout(function(e){
+    var name = e.target.value;
+    $.get("{{ route('affectation.index') }}" +'/' + name +'/edit', function (data) {
+        $('#fonction').val(data[0].fonction_emp);
+        console.log(data[0]);
+    })
+}); */
+
+$('body').on('click', '.editAsset', function () {
+      var m_asset_id = $(this).data('id');
+      $.get("{{ route('asset.index') }}" +'/' + m_asset_id +'/edit', function (data) {
+        $('#e_modelHeading').html("Modifier Asset");
+        $('#edit_asset').modal('show');
+        $('#m_asset_id').val(data[0].id_asset);
+        $('#type_id').val(data[0].id);
+        $('#type_description').val(data[0].type_description);
+        $('#asset_code').val(data[0].inventory_code);
+        $('#asset_invent').val(data[0].inventory_num);
+        $('#asset_desc').val(data[0].asset_description);
+        $('#asset_serial').val(data[0].serial_num);
+        $('#purch_order').val(data[0].asset_PO);
+        $('#purch_order_date').val(data[0].PO_date);
+        $('#asset_comment').val(data[0].asset_comment);
+        
+        console.log(data[0]);
+      })
+   });
+
+</script>
+
+
+
+<script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript">
+
+
+    
+  $(function () {
+
+      $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+    });
+
+    var table = $('.data-table').DataTable({
+        processing: true,
+        serverSide: true,
+        scrollX: true,
+        scrollCollapse: true,
+        autoWidth: true,
+        paging: true,
+        ajax: "{{ route('affectation.index') }}",
+
+        columns: [
+            {data: 'nom_emp', name: 'nom_emp'},
+            {data: 'inv_laptop', name: 'inv_laptop'},
+            {data: 'desc_laptop', name: 'desc_laptop'},
+            {data: 'serial_laptop', name: 'serial_laptop'},
+            {data: 'nom_laptop', name: 'nom_laptop'},
+            {data: 'inv_radio', name: 'inv_radio'},
+            {data: 'desc_radio', name: 'desc_radio'},
+            {data: 'serial_radio', name: 'serial_radio'},
+            {data: 'call_radio', name: 'call_radio'},
+            {data: 'inv_thuraya', name: 'inv_thuraya'},
+            {data: 'desc_thuraya', name: 'desc_thuraya'},
+            {data: 'serial_thuraya', name: 'serial_thuraya'},
+            {data: 'sim_thuraya', name: 'sim_thuraya'},
+            {data: 'numero_thuraya', name: 'num_thuraya'},
+            {data: 'comment_affect', name: 'comment_affect'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ]
+
+    });
+    $('#createAffect').click(function () {
+        $('#saveBtn').val("create-product");
+        $('#m_asset_id').val('');
+        $('#AddForm').trigger("reset");
+        $('#modelHeading').html("Nouvel Affectation");
+        $('#add_affect').modal('show');
+    });
+
+    $('body').on('click', '.editAsset', function () {
+      var m_asset_id = $(this).data('id');
+      $.get("{{ route('affectation.index') }}" +'/' + m_asset_id +'/edit', function (data) {
+        $('#e_modelHeading').html("Modifier Asset");
+        $('#edit_asset').modal('show');
+        $('#m_asset_id').val(data[0].id_asset);
+        $('#type_id').val(data[0].id);
+        $('#type_description').val(data[0].type_description);
+        $('#asset_code').val(data[0].inventory_code);
+        $('#asset_invent').val(data[0].inventory_num);
+        $('#asset_desc').val(data[0].asset_description);
+        $('#asset_serial').val(data[0].serial_num);
+        $('#purch_order').val(data[0].asset_PO);
+        $('#purch_order_date').val(data[0].PO_date);
+        $('#asset_comment').val(data[0].asset_comment);
+        
+        console.log(data[0]);
+      })
+   });
+
+    $('body').on('click', '.delAsset', function () {
+      var d_asset_id = $(this).data('id');
+      $.get("{{ route('asset.index') }}" +'/' + d_asset_id +'/edit', function (data) {
+        $('#d_modelHeading').html("Supprimer Asset");
+        $('#delete_asset').modal('show');
+        $('#d_asset_id').val(data[0].id_asset);
+        console.log(data[0]);
+      })
+   });
+  });
+
+
+  
+</script>
+
+@endsection

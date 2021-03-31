@@ -1,0 +1,173 @@
+@extends('layouts.admin')
+
+@section('contenu')
+<button data-toggle="modal" data-target="#add_employe" class="btn btn-primary" id="createEmploye">Nouveau</button>
+<br><br>
+<input type="text" class="col form-group form-control form-control-user" id="nom" name="nom" placeholder="Nom...">   
+
+<div class="container mt-5 table-responsive">
+    <h5 class="mb-4">Liste du personnel</h5>
+    <table class="table table-bordered data-table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>email</th>
+                <th>Bureau</th>
+                <th>Section</th>
+                <th>Fonction</th>
+                <th>Extension</th>
+                <th>Ligne_direct</th>
+                <th>Num_flotte</th>
+                <th width="100px">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+    {{-- Modal Nouveau Staff --}}
+    <div class="modal fade " data-backdrop="static" data-keyboard="false" id="add_employe">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content container">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modelHeading">Nouveau Staff</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <form action="{{route('employe.store')}}" method="POST">
+                    @csrf
+                    <div class="modal-body row">
+                        <fieldset class="form-group border border-primary rounded p-2">
+                            <legend  class="w-auto col-form-label"> Informations Personnelles </legend>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input type="text" class="col form-group form-control form-control-user" id="nom" name="nom" placeholder="Nom...">   
+                                    </div>
+                                    <div class="col-md-6"> 
+                                        <input type="text" class="form-group form-control form-control-user" id="email" name="email" placeholder="Adresse Email...">
+                                        <input type="text" class="form-group form-control form-control-user" id="num_flotte" name="num_flotte" placeholder="Numéro Flotte...">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-group form-control form-control-user" id="extension" name="extension" placeholder="Extension...">
+                                        <input type="text" class="form-group form-control form-control-user" id="lgn_direct" name="lgn_direct" placeholder="Ligne Directe...">
+                                    </div>
+                                </div>
+                        </fieldset>
+                        <fieldset class="form-group border border-primary rounded p-2">
+                            <legend  class="w-auto col-form-label"> Informations Professionnelles </legend>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                    </div>
+                                    <div class="col-md-6"> 
+                                        <input type="text" class="form-group form-control form-control-user" id="fonction" name="fonction" placeholder="Fonction..." > 
+                                        <input type="text" class="form-group form-control form-control-user" id="unite" name="unite" placeholder="Unité...">
+                                    </div>
+                                    <div class="col-md-6"> 
+                                        <input type="text" class="form-group form-control form-control-user" id="section" name="section" placeholder="Section...">
+                                        <input type="text" class="form-group form-control form-control-user" id="bureau" name="bureau" placeholder="Duty of Station..." > 
+                                    </div>
+                                </div>
+                        </fieldset>
+                        <fieldset class="col-md-12 form-group border border-primary rounded p-2">
+                            <legend class="w-auto col-form-label"> Autres Informations </legend>
+                                <div class="row ">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input type="radio" name="radio" id="staff" value="1" checked>
+                                            <label class="form-check-label" for="staff">Staff</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="radio" name="radio" id="bcp" value="2">
+                                            <label class="form-check-label" for="bcp">BCP Member</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="radio" name="radio" id="consultant" value="3">
+                                            <label class="form-check-label" for="consultant">Consultant</label>
+                                        </div>
+                                    </div> 
+                    
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-group form-control form-control-user" id="num_telmob" name="num_telmob"  placeholder="Numéro Telmob...">
+                                        <input type="text" class="form-group form-control form-control-user" id="num_thuraya" name="num_thuraya"  placeholder="Numéro Thuraya...">
+                                    </div>
+                                </div>
+                        </fieldset>
+                        
+                        <fieldset class="col-md-12 form-group border border-primary rounded p-2">
+                            <legend  class="w-auto col-form-label"> Commentaires </legend>
+                                <textarea class="form-control" name="emp_comment" id="emp_comment" placeholder="Commentaires..." rows="3"></textarea>
+                        </fieldset>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- Fin Modal Nouveau Staff --}}
+
+   {{--  <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script> --}}
+
+<script type="text/javascript">
+    
+    $("input#nom").autocomplete({
+        source: function( request, response ) {
+            // Fetch data
+            $.ajax({
+            url:"{{route('completeemp')}}",
+            type: 'post',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                console.log(data);
+                response( data );
+            }
+            });
+        },
+        //appendTo: "#add_affect",
+        select: function (event, ui) {
+            // Set selection
+            $('#invent_lap').val(ui.item.label); // display the selected text
+            $('#desc_lap').val(ui.item.value); // save selected id to input
+            $('#serial_lap').val(ui.item.serial); // save selected id to input
+            return false;
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    $(function () {
+      var table = $('.data-table').DataTable({
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            scrollCollapse: true,
+            autoWidth: true,
+            paging: true,
+          ajax: "{{ route('employe.index') }}",
+          columns: [
+              {data: 'nom_emp', name: 'nom_emp'},
+              {data: 'email', name: 'email'},
+              {data: 'nom_bur', name: 'nom_bur'},
+              {data: 'nom_unite', name: 'unite'},
+              {data: 'fonction_emp', name: 'fonction_emp'},
+              {data: 'extension_emp', name: 'extension_emp'},
+              {data: 'ligne_direct', name: 'ligne_direct'},
+              {data: 'num_flotte', name: 'num_flotte'},
+              {data: 'action', name: 'action', orderable: false, searchable: false},
+          ]
+      });
+    });
+  </script>
+
+  @endsection

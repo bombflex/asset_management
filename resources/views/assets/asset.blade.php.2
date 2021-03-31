@@ -1,0 +1,229 @@
+@extends('layouts.admin')
+
+@section('contenu')
+ 
+    <button data-toggle="modal" data-target="#add_laptop" class="btn btn-primary">Nouveau</button>
+    <br><br>
+    <div class="table-responsive ">
+            <table id="datatable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">Code d'Inventaire</th>
+                        <th scope="col">Numéro d'Inventaire</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Numéro de Série</th>
+                        <th scope="col">Numéro de PO</th>
+                        <th scope="col">Date de PO</th>
+                        <th scope="col">Commentaires</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($assets as $item)
+                        <tr>
+                            <td >{{$item->asset_description}}</td>
+                            <td >{{$item->inventory_code}}</td>
+                            <td >{{$item->inventory_num}}</td>
+                            <td >{{$item->asset_description}}</td> 
+                            <td >{{$item->serial_num}}</td> 
+                            <td >{{$item->asset_PO}}</td> 
+                            <td >{{$item->PO_date}}</td> 
+                            <td >{{$item->asset_comment}}</td>
+                            <td >
+                                {{-- Bouton Modier --}}
+                                <button type="button" data-toggle="modal" data-target="#edit_laptop" class="btn editbtn btn-primary btn-sm fa fa-edit" 
+                                    data-asset_id="{{$item->id}}" data-inventory_code="{{$item->inventory_code}}" data-asset_type="{{$item->asset_description}}"
+                                    data-inventory_num="{{$item->inventory_num}}" data-asset_description="{{$item->asset_description}}" 
+                                    data-serial_num="{{$item->serial_num}}" data-asset_PO="{{$item->asset_PO}}" data-PO_date="{{$item->PO_date}}" 
+                                    data-asset_comment="{{$item->asset_comment}}" >
+                                </button>
+                                {{-- Fin Bouton Modier --}}
+
+                                {{-- Bouton Supprimer --}}
+                                <button type="button" data-toggle="modal" data-target="#delete_laptop" class="btn btn-danger btn-sm fa fa-trash-alt"
+                                data-asset_id="{{$item->id}}"></button>
+                                {{-- Fin Bouton Supprimer --}}
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+    </div>
+{{-- Modal Nouveau Laptop --}}
+    <div class="modal fade " data-backdrop="static" data-keyboard="false" id="add_laptop">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content container">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nouveau Materiel</h5>              
+                    <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                    </button>
+                </div>
+                <form class="col" action="{{route('asset.store')}}" method="POST">
+                    @csrf
+                    <div class="modal-body row">
+                        <div class="form-group row">
+                            <label for="asset_type" class="form-group col-md-4 col-form-label">Type: </label>
+                            <div class="col-md-8">
+                                <select class="form-control form-control form-control-user" id="asset_type" name="asset_type">
+                                    @foreach ($asset_type as $item)
+                                        <option value="{{$item->id}}"> {{$item->description}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <input type="text" class="form-group form-control form-control-user" name="asset_code"  placeholder="Code d'Inventaire..."> 
+                        <input type="text" class="form-group form-control form-control-user" name="asset_invent"  placeholder="Numéro d'Inventaire..."> 
+                        <input type="text" class="form-group form-control form-control-user" name="asset_desc"  placeholder="Description..."> 
+                        <input type="text" class="form-group form-control form-control-user"  name="asset_serial"  placeholder="Numéro de Serie..."> 
+                        <input type="text" class="form-group form-control form-control-user"  name="purch_order"  placeholder="Purchase Order..."> 
+                        <div class="form-group row">
+                            <label for="asset_date" class="col-form-label col-md-5">Date d'achat:</label>
+                            <div class="col-md-7">
+                                <input type="date" class="form-group form-control form-control-user"  name="purch_order_date"> 
+                            </div>
+                        </div>
+                        <textarea class="form-control" name="asset_comment" placeholder="Commentaires..." rows="3"></textarea>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+{{-- Fin Modal Nouveau Laptop --}}
+
+{{-- Modal Modifier Laptop --}}
+    <div class="modal fade " data-backdrop="static" data-keyboard="false" id="edit_laptop">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content container">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>              
+                    <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                    </button>
+                </div>
+                <form class="col" action="{{ route('asset.update','asset_id') }}"  method="POST">
+                    @csrf
+                    @method('PUT') 
+                    <div class="modal-body row">
+                        <input type="hidden" class="form-group form-control form-control-user" id="asset_id" name="asset_id" > 
+                        <div class="form-group row">
+                            <label for="asset_type" class="form-group col-md-4 col-form-label">Type: </label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-group form-control form-control-user" id="asset_type" name="asset_type" disabled> 
+                               {{--  <select class="form-control form-control form-control-user" id="asset_type" name="asset_type">
+                                    @foreach ($asset_type as $item)
+                                        <option value="{{$item->id}}"> {{$item->description}}</option>
+                                    @endforeach
+                                </select> --}}
+                            </div>
+                        </div> 
+                        <input type="text" class="form-group form-control form-control-user" id="asset_code" name="asset_code" > 
+                        <input type="text" class="form-group form-control form-control-user" id="asset_invent" name="asset_invent" > 
+                        <input type="text" class="form-group form-control form-control-user" id="asset_desc" name="asset_desc" > 
+                        <input type="text" class="form-group form-control form-control-user" id="asset_serial" name="asset_serial" > 
+                        <input type="text" class="form-group form-control form-control-user" id="purch_order" name="purch_order" > 
+                        <div class="form-group row">
+                            <label for="asset_date" class="col-form-label col-md-5">Date d'achat:</label>
+                            <div class="col-md-7">
+                                <input type="date" class="form-group form-control form-control-user" id="purch_order_date" name="purch_order_date"> 
+                            </div>
+                        </div>
+                        <textarea class="form-control" id="asset_comment" name="asset_comment" rows="3"></textarea>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+{{-- Fin Modal Modifier Laptop --}}
+
+{{-- Modal Supprimer Laptop --}}
+<div class="modal fade " data-backdrop="static" data-keyboard="false" id="delete_laptop">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content container">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>              
+                <button type="button" class="close" data-dismiss="modal">
+                <span>&times;</span>
+                </button>
+            </div>
+            <form class="col" action="{{ route('asset.destroy','asset_id') }}"  method="POST">
+                @csrf
+                @method('DELETE') 
+                <div class="modal-body row">
+                    <input type="hidden" class="form-group form-control form-control-user" id="asset_id" name="asset_id" > 
+                    <p class="text-center" width="50px">Voulez vous vraiment supprimer?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning">oui</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Non</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{{-- Fin Modal Supprimer Laptop --}}
+
+ <!-- Bootstrap core JavaScript-->
+<script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+<script>
+    $('#edit_laptop').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var asset_id = button.data('asset_id') // Extract info from data-* attributes
+        var asset_type = button.data('asset_type') // Extract info from data-* attributes
+        var asset_code = button.data('inventory_code') // Extract info from data-* attributes
+        var asset_invent = button.data('inventory_num') // Extract info from data-* attributes
+        var asset_desc = button.data('asset_description') // Extract info from data-* attributes
+        var asset_serial = button.data('serial_num') // Extract info from data-* attributes
+        var asset_po = button.data('asset_po') // Extract info from data-* attributes
+        var asset_po_date = button.data('po_date') // Extract info from data-* attributes
+        var asset_comment = button.data('asset_comment') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        console.log(event.relatedTarget)
+        modal.find('.modal-title').text('Nouveau Laptop')
+        modal.find('.modal-body #asset_id').val(asset_id)
+        modal.find('.modal-body #asset_type').val(asset_type)
+        modal.find('.modal-body #asset_code').val(asset_code)
+        modal.find('.modal-body #asset_invent').val(asset_invent)
+        modal.find('.modal-body #asset_desc').val(asset_desc)
+        modal.find('.modal-body #asset_serial').val(asset_serial)
+        modal.find('.modal-body #purch_order').val(asset_po)
+        modal.find('.modal-body #purch_order_date').val(asset_po_date)
+        modal.find('.modal-body #asset_comment').val(asset_comment)
+    })
+</script>
+
+<script>
+    $('#delete_laptop').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var asset_id = button.data('asset_id') // Extract info from data-* attributes
+
+        var modal = $(this)
+        modal.find('.modal-title').text('Supprimer Laptop')
+        modal.find('.modal-body #asset_id').val(asset_id)
+    })
+</script>
+
+
+
+@endsection

@@ -1,0 +1,138 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\{Asset,AssetType,Employe};
+use Illuminate\Support\Facades\DB;
+use DataTables;
+
+
+
+class AssetController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //
+        //return view('assets/add_asset');
+        $asset_type = AssetType::select('id','type_description')
+            ->orderBy('type_description','asc')
+            ->get(); 
+
+        /*$asset = Asset::all();
+
+        return view('assets/asset')
+            ->with(compact ('asset'))
+            ->with(compact('asset_type'));
+ */
+    $assets = DB::table('assets')
+        ->join('asset_type', 'assets.asset_type', '=', 'asset_type.id')
+        ->get();
+
+
+        return view('assets/asset')
+            ->with(compact ('assets'))
+            ->with(compact('asset_type'));
+    } 
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+       /*   */
+        $asset = new Asset;
+        $asset->asset_type = $request->asset_type;
+        $asset->inventory_code = $request->asset_code;
+        $asset->inventory_num = $request->asset_invent;
+        $asset->asset_description = $request->asset_desc;
+        $asset->serial_num  = $request->asset_serial;
+        $asset->asset_PO  = $request->purch_order;
+        $asset->PO_date  = $request->purch_order_date;
+        $asset->asset_comment = $request->asset_comment;
+        
+        $asset->save();
+        //return $request->input();
+        return redirect('asset');
+
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $asset_id = $request->input('asset_id');
+        $asset = Asset::find($asset_id);
+        $asset->asset_type = $request->asset_type;
+        $asset->inventory_code = $request->asset_code;
+        $asset->inventory_num = $request->asset_invent;
+        $asset->asset_description = $request->asset_desc;
+        $asset->serial_num  = $request->asset_serial;
+        $asset->asset_PO  = $request->purch_order;
+        $asset->PO_date  = $request->purch_order_date;
+        $asset->asset_comment = $request->asset_comment;
+        
+        $asset->save();
+        //return $request->input();
+        return redirect('asset');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
+        $asset_id = $request->input('asset_id');
+        $asset = Asset::find($asset_id);
+        $asset->delete();
+        return redirect('asset');
+    }
+}
